@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KoranKu - Koran Digital Terpercaya</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #f4f4f2; color: #222; }
+
+  header { background: #1a237e; color: #fff; padding: 16px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+  .logo { font-size: 26px; font-weight: bold; letter-spacing: 1px; }
+  .logo span { color: #ffd54f; }
+  nav a { color: #fff; text-decoration: none; margin-left: 24px; font-size: 15px; }
+  nav a:hover { color: #ffd54f; }
+
+  .hero { background: linear-gradient(rgba(26,35,126,.85), rgba(26,35,126,.85)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1400') center/cover; color: #fff; text-align: center; padding: 90px 5%; }
+  .hero h1 { font-size: 42px; margin-bottom: 16px; }
+  .hero p { font-size: 18px; max-width: 600px; margin: 0 auto 30px; opacity: .9; }
+  .btn { display: inline-block; background: #ffd54f; color: #1a237e; padding: 14px 32px; border-radius: 6px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; font-size: 16px; }
+  .btn:hover { background: #ffca28; }
+
+  section { padding: 60px 5%; }
+  .section-title { text-align: center; font-size: 30px; margin-bottom: 8px; color: #1a237e; }
+  .section-sub { text-align: center; color: #666; margin-bottom: 40px; }
+
+  .koran-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+  .koran-card { background: #fff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.08); transition: transform .2s; }
+  .koran-card:hover { transform: translateY(-5px); }
+  .koran-cover { height: 160px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; font-weight: bold; }
+  .koran-body { padding: 18px; }
+  .koran-body h3 { margin-bottom: 6px; }
+  .koran-body p { font-size: 14px; color: #666; margin-bottom: 12px; }
+  .price { font-size: 18px; font-weight: bold; color: #1a237e; margin-bottom: 12px; }
+  .price small { font-weight: normal; color: #888; }
+  .btn-sm { padding: 10px 18px; font-size: 14px; width: 100%; }
+
+  .paket { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; max-width: 1000px; margin: 0 auto; }
+  .paket-card { background: #fff; border: 2px solid #e0e0e0; border-radius: 12px; padding: 30px; text-align: center; }
+  .paket-card.unggulan { border-color: #ffd54f; position: relative; }
+  .badge { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); background: #ffd54f; color: #1a237e; padding: 4px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  .paket-card h3 { color: #1a237e; margin-bottom: 10px; }
+  .paket-harga { font-size: 32px; font-weight: bold; margin-bottom: 16px; }
+  .paket-harga small { font-size: 14px; color: #888; font-weight: normal; }
+  .paket-card ul { list-style: none; margin-bottom: 24px; }
+  .paket-card li { padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #555; }
+
+  .keunggulan { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; text-align: center; }
+  .keunggulan .icon { font-size: 40px; margin-bottom: 12px; }
+  .keunggulan h4 { margin-bottom: 8px; color: #1a237e; }
+  .keunggulan p { font-size: 14px; color: #666; }
+
+  .keranjang { background: #fff; border-radius: 12px; padding: 30px; max-width: 700px; margin: 0 auto; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+  .keranjang-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+  .keranjang-item button { background: #e53935; color: #fff; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+  .total { display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; padding: 16px 0; color: #1a237e; }
+  .kosong { color: #888; text-align: center; padding: 20px; }
+
+  footer { background: #1a237e; color: #fff; text-align: center; padding: 30px 5%; margin-top: 40px; }
+  footer p { opacity: .8; font-size: 14px; }
+
+  .toast { position: fixed; bottom: 24px; right: 24px; background: #2e7d32; color: #fff; padding: 14px 24px; border-radius: 8px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200; }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 28px; }
+    nav a { margin-left: 12px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Koran<span>Ku</span></div>
+  <nav>
+    <a href="#koran">Koran</a>
+    <a href="#paket">Paket</a>
+    <a href="#keranjang">Keranjang 🛒 (<span id="jumlah-keranjang">0</span>)</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h1>Baca Koran Digital Dimana Saja</h1>
+  <p>Akses ratusan koran ternama dalam format digital. Update setiap hari, harga terjangkau, tanpa kertas.</p>
+  <a href="#paket" class="btn">Lihat Paket Langganan</a>
+</div>
+
+<section id="koran">
+  <h2 class="section-title">Koran Populer</h2>
+  <p class="section-sub">Pilih koran favoritmu dan beli satuan atau langganan</p>
+  <div class="koran-grid" id="daftar-koran"></div>
+</section>
+
+<section id="paket" style="background:#eef0f8;">
+  <h2 class="section-title">Paket Langganan</h2>
+  <p class="section-sub">Hemat lebih banyak dengan paket berlangganan</p>
+  <div class="paket">
+    <div class="paket-card">
+      <h3>Basic</h3>
+      <div class="paket-harga">Rp25.000<small>/bulan</small></div>
+      <ul>
+        <li>1 koran pilihan</li>
+        <li>Arsip 7 hari</li>
+        <li>1 perangkat</li>
+      </ul>
+      <button class="btn btn-sm" onclick="langganan('Paket Basic', 25000)">Langganan</button>
+    </div>
+    <div class="paket-card unggulan">
+      <div class="badge">TERPOPULER</div>
+      <h3>Premium</h3>
+      <div class="paket-harga">Rp60.000<small>/bulan</small></div>
+      <ul>
+        <li>5 koran pilihan</li>
+        <li>Arsip 30 hari</li>
+        <li>3 perangkat</li>
+        <li>Tanpa iklan</li>
+      </ul>
+      <button class="btn btn-sm" onclick="langganan('Paket Premium', 60000)">Langganan</button>
+    </div>
+    <div class="paket-card">
+      <h3>All Access</h3>
+      <div class="paket-harga">Rp99.000<small>/bulan</small></div>
+      <ul>
+        <li>Semua koran</li>
+        <li>Arsip tanpa batas</li>
+        <li>Perangkat tak terbatas</li>
+        <li>Tanpa iklan + e-magazine</li>
+      </ul>
+      <button class="btn btn-sm" onclick="langganan('Paket All Access', 99000)">Langganan</button>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2 class="section-title">Kenapa KoranKu?</h2>
+  <p class="section-sub">Keunggulan membaca koran digital bersama kami</p>
+  <div class="keunggulan">
+    <div><div class="icon">📱</div><h4>Akses Multi-Perangkat</h4><p>Baca di HP, tablet, atau laptop kapan saja.</p></div>
+    <div><div class="icon">⚡</div><h4>Update Real-time</h4><p>Berita terbaru langsung masuk ke layar Anda.</p></div>
+    <div><div class="icon">💾</div><h4>Arsip Lengkap</h4><p>Temukan berita lama dengan mudah.</p></div>
+    <div><div class="icon">🌱</div><h4>Ramah Lingkungan</h4><p>Tanpa kertas, lebih hijau untuk bumi.</p></div>
+  </div>
+</section>
+
+<section id="keranjang" style="background:#eef0f8;">
+  <h2 class="section-title">Keranjang Belanja</h2>
+  <p class="section-sub">Periksa pesananmu sebelum checkout</p>
+  <div class="keranjang">
+    <div id="isi-keranjang"><p class="kosong">Keranjang masih kosong</p></div>
+    <div class="total"><span>Total</span><span id="total-harga">Rp0</span></div>
+    <button class="btn" style="width:100%;" onclick="checkout()">Checkout Sekarang</button>
+  </div>
+</section>
+
+<footer>
+  <div class="logo" style="margin-bottom:10px;">Koran<span>Ku</span></div>
+  <p>© 2026 KoranKu — Portal Koran Digital Terpercaya</p>
+  <p>Hubungi kami: halo@koranku.example | 0800-123-4567</p>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const koran = [
+  { nama: "Harian Bangsa", kategori: "Berita Umum", harga: 8000, warna: "#b71c1c" },
+  { nama: "Bisnis Hari Ini", kategori: "Ekonomi & Bisnis", harga: 10000, warna: "#1b5e20" },
+  { nama: "Sport Zone", kategori: "Olahraga", harga: 7000, warna: "#e65100" },
+  { nama: "Tech Daily", kategori: "Teknologi", harga: 9000, warna: "#283593" },
+  { nama: "Klasik Pos", kategori: "Budaya & Hiburan", harga: 6000, warna: "#4e342e" },
+  { nama: "Nusa Post", kategori: "Daerah", harga: 5000, warna: "#00695c" }
+];
+
+let keranjang = [];
+
+function rupiah(n) {
+  return "Rp" + n.toLocaleString("id-ID");
+}
+
+function renderKoran() {
+  document.getElementById("daftar-koran").innerHTML = koran.map((k, i) => `
+    <div class="koran-card">
+      <div class="koran-cover" style="background:${k.warna}">${k.nama}</div>
+      <div class="koran-body">
+        <h3>${k.nama}</h3>
+        <p>${k.kategori}</p>
+        <div class="price">${rupiah(k.harga)} <small>/edisi</small></div>
+        <button class="btn btn-sm" onclick="tambahKeranjang(${i})">+ Keranjang</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderKeranjang() {
+  const el = document.getElementById("isi-keranjang");
+  document.getElementById("jumlah-keranjang").textContent = keranjang.length;
+  if (keranjang.length === 0) {
+    el.innerHTML = '<p class="kosong">Keranjang masih kosong</p>';
+  } else {
+    el.innerHTML = keranjang.map((item, i) => `
+      <div class="keranjang-item">
+        <span>${item.nama}</span>
+        <span>${rupiah(item.harga)}
+          <button style="margin-left:12px;" onclick="hapusKeranjang(${i})">Hapus</button>
+        </span>
+      </div>
+    `).join("");
+  }
+  const total = keranjang.reduce((s, item) => s + item.harga, 0);
+  document.getElementById("total-harga").textContent = rupiah(total);
+}
+
+function tambahKeranjang(i) {
+  keranjang.push({ ...koran[i] });
+  renderKeranjang();
+  toast(koran[i].nama + " ditambahkan ke keranjang");
+}
+
+function langganan(nama, harga) {
+  keranjang.push({ nama, harga });
+  renderKeranjang();
+  toast(nama + " ditambahkan ke keranjang");
+}
+
+function hapusKeranjang(i) {
+  keranjang.splice(i, 1);
+  renderKeranjang();
+}
+
+function checkout() {
+  if (keranjang.length === 0) { toast("Keranjang masih kosong!", true); return; }
+  const total = keranjang.reduce((s, item) => s + item.harga, 0);
+  alert("Terima kasih! Pesanan Anda:\n\n" +
+    keranjang.map(k => "• " + k.nama + " — " + rupiah(k.harga)).join("\n") +
+    "\n\nTotal: " + rupiah(total) + "\n\nPembayaran berhasil (demo).");
+  keranjang = [];
+  renderKeranjang();
+}
+
+let toastTimer;
+function toast(pesan, error) {
+  const el = document.getElementById("toast");
+  el.textContent = pesan;
+  el.style.background = error ? "#c62828" : "#2e7d32";
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove("show"), 2500);
+}
+
+renderKoran();
+renderKeranjang();
+</script>
+</body>
+</html>
